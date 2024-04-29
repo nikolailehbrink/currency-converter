@@ -1,6 +1,21 @@
 import { useEffect, useState } from "react";
 import { APIPayload } from "./types/api";
 
+const supportedCurrencies = [
+  {
+    currency: "EUR",
+    name: "EURO",
+  },
+  {
+    currency: "USD",
+    name: "USD",
+  },
+  {
+    currency: "JPY",
+    name: "YEN",
+  },
+];
+
 function App() {
   const [amount, setAmount] = useState(1);
   const [fromCurrency, setFromCurrency] = useState("EUR");
@@ -34,35 +49,41 @@ function App() {
 
   return (
     <div className="bg-neutral-200 p-8">
-      <div>
-        <input
-          type="number"
-          name="amount"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-        />
-        <select
-          name="fromCurrency"
-          defaultValue={fromCurrency}
-          onChange={(e) => setFromCurrency(e.target.value)}
-        >
-          <option value="EUR">EURO</option>
-          <option value="USD">USD</option>
-          <option value="JPY">YEN</option>
-        </select>
-        <div>
-          <p>{convertedAmount.toFixed(2)}</p>
+      <form>
+        <div className="flex">
+          <input
+            type="number"
+            name="amount"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+          <select
+            name="fromCurrency"
+            defaultValue={fromCurrency}
+            onChange={(e) => setFromCurrency(e.target.value)}
+          >
+            {supportedCurrencies.map(({ currency, name }) => (
+              <option key={currency} value={currency}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex">
+          <input type="text" value={convertedAmount.toFixed(2)} readOnly />
           <select
             name="toCurrency"
             defaultValue={toCurrency}
             onChange={(e) => setToCurrency(e.target.value)}
           >
-            <option value="EUR">EURO</option>
-            <option value="USD">USD</option>
-            <option value="JPY">YEN</option>
+            {supportedCurrencies.map(({ currency, name }) => (
+              <option key={currency} value={currency}>
+                {name}
+              </option>
+            ))}
           </select>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
