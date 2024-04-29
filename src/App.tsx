@@ -1,33 +1,67 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect, useState } from "react";
+import { APIPayload } from "./types/api";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [amount, setAmount] = useState(1);
+  const [fromCurrency, setFromCurrency] = useState("EUR");
+  const [toCurrency, setToCurrency] = useState("USD");
+  const [convertedAmount, setConvertedAmount] = useState(0);
+  const [conversionRate, setConversionRate] = useState(0);
+
+  useEffect(() => {
+    async function fetchCurrency() {
+      try {
+        const response = await fetch(
+          `https://v6.exchangerate-api.com/v6/084790f21025c3909444d34d/pair/${fromCurrency}/${toCurrency}`
+        );
+        const data = (await response.json()) as APIPayload;
+        console.log(data.conversion_rate);
+
+        setConversionRate(data.conversion_rate);
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchCurrency();
+  }, [fromCurrency, toCurrency]);
+
+  useEffect(() => {
+    setConvertedAmount(amount * conversionRate);
+  }, [conversionRate, amount]);
 
   return (
-    <>
-      <div className="bg-black">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="bg-neutral-200 p-8">
+      <div>
+        <input
+          type="number"
+          name="amount"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+        />
+        <select
+          name="fromCurrency"
+          defaultValue={fromCurrency}
+          onChange={(e) => setFromCurrency(e.target.value)}
+        >
+          <option value="EUR">EURO</option>
+          <option value="USD">USD</option>
+          <option value="JPY">YEN</option>
+        </select>
+        <div>
+          <p>{convertedAmount.toFixed(2)}</p>
+          <select
+            name="toCurrency"
+            defaultValue={toCurrency}
+            onChange={(e) => setToCurrency(e.target.value)}
+          >
+            <option value="EUR">EURO</option>
+            <option value="USD">USD</option>
+            <option value="JPY">YEN</option>
+          </select>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
 
