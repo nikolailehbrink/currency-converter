@@ -57,13 +57,14 @@ export default function ConvertCurrencyForm() {
   }, [conversionRate, amount]);
 
   return (
-    <form>
+    <form className="p-4  max-w-md mt-8">
       <div className="flex">
         <input
           type="number"
           name="amount"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
+          className="m-1 px-1 w-full ring-2 ring-neutral-500 rounded-md"
         />
         <select
           name="fromCurrency"
@@ -91,7 +92,7 @@ export default function ConvertCurrencyForm() {
           ))}
         </select>
       </div>
-      {errorMessage && <p className="bg-red-400">{errorMessage}</p>}
+      {errorMessage && <p className="bg-red-300">{errorMessage}</p>}
     </form>
   );
 }
