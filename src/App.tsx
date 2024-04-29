@@ -12,7 +12,9 @@ function App() {
     async function fetchCurrency() {
       try {
         const response = await fetch(
-          `https://v6.exchangerate-api.com/v6/084790f21025c3909444d34d/pair/${fromCurrency}/${toCurrency}`
+          `https://v6.exchangerate-api.com/v6/${
+            import.meta.env.VITE_EXCHANGE_API_KEY
+          }/pair/${fromCurrency}/${toCurrency}`
         );
         const data = (await response.json()) as APIPayload;
         console.log(data.conversion_rate);
