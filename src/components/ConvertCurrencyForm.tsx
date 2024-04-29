@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 import { APIPayload } from "../types/api";
+import { Input } from "./ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const supportedCurrencies = [
   {
@@ -57,40 +65,49 @@ export default function ConvertCurrencyForm() {
   }, [conversionRate, amount]);
 
   return (
-    <form className="p-4  max-w-md mt-8">
-      <div className="flex">
-        <input
+    <form className="flex gap-2 max-sm:flex-col">
+      <div className="flex gap-2">
+        <Input
           type="number"
           name="amount"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
-          className="m-1 px-1 w-full ring-2 ring-neutral-500 rounded-md"
         />
-        <select
+        <Select
           name="fromCurrency"
-          defaultValue={fromCurrency}
-          onChange={(e) => setFromCurrency(e.target.value)}
+          value={fromCurrency}
+          onValueChange={(e) => setFromCurrency(e)}
         >
-          {supportedCurrencies.map(({ currency, name }) => (
-            <option key={currency} value={currency}>
-              {name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {supportedCurrencies.map(({ currency, name }) => (
+              <SelectItem key={currency} value={currency}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-      <div className="flex">
-        <input type="text" value={convertedAmount.toFixed(2)} readOnly />
-        <select
+      <div className="flex gap-2 max-sm:flex-row-reverse">
+        <Select
           name="toCurrency"
-          defaultValue={toCurrency}
-          onChange={(e) => setToCurrency(e.target.value)}
+          value={toCurrency}
+          onValueChange={(e) => setToCurrency(e)}
         >
-          {supportedCurrencies.map(({ currency, name }) => (
-            <option key={currency} value={currency}>
-              {name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {supportedCurrencies.map(({ currency, name }) => (
+              <SelectItem key={currency} value={currency}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Input type="text" value={convertedAmount.toFixed(2)} readOnly />
       </div>
       {errorMessage && <p className="bg-red-300">{errorMessage}</p>}
     </form>
