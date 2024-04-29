@@ -22,6 +22,7 @@ function App() {
   const [toCurrency, setToCurrency] = useState("USD");
   const [convertedAmount, setConvertedAmount] = useState(0);
   const [conversionRate, setConversionRate] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     async function fetchCurrency() {
@@ -31,20 +32,34 @@ function App() {
             import.meta.env.VITE_EXCHANGE_API_KEY
           }/pair/${fromCurrency}/${toCurrency}`
         );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch currency data.");
+        }
+
         const data = (await response.json()) as APIPayload;
-        console.log(data.conversion_rate);
+        console.log(data);
 
         setConversionRate(data.conversion_rate);
         return data;
       } catch (error) {
         console.log(error);
+        error instanceof Error && setErrorMessage(error.message);
       }
     }
-    fetchCurrency();
+
+    if (fromCurrency && toCurrency) {
+      fetchCurrency();
+    }
   }, [fromCurrency, toCurrency]);
 
   useEffect(() => {
-    setConvertedAmount(amount * conversionRate);
+    if (!isNaN(amount) && conversionRate !== 0) {
+      console.log(amount, conversionRate);
+
+      setConvertedAmount(amount * conversionRate);
+      setErrorMessage("");
+    }
   }, [conversionRate, amount]);
 
   return (
@@ -84,6 +99,7 @@ function App() {
           </select>
         </div>
       </form>
+      {errorMessage && <p className="bg-red-400">{errorMessage}</p>}
     </div>
   );
 }
