@@ -1,4 +1,6 @@
 import ConvertCurrencyForm from "./components/ConvertCurrencyForm";
+// Supports weights 100-900
+import "@fontsource-variable/inter";
 
 function App() {
   return (
